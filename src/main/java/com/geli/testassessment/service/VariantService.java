@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.geli.testassessment.model.dto.BaseResponse;
+import com.geli.testassessment.model.dto.VariantRequestDTO;
 import com.geli.testassessment.model.entity.Item;
 import com.geli.testassessment.model.entity.Variant;
 import com.geli.testassessment.repository.ItemRepository;
@@ -22,34 +23,43 @@ public class VariantService {
     private final VariantRepository variantRepository;
     private final ItemRepository itemRepository;
 
-    public ResponseEntity<BaseResponse<Object>> addNewVariant(List<Variant> newData, Long itemId) {
+    public ResponseEntity<BaseResponse<Object>> addNewVariant(List<VariantRequestDTO> newData, Long itemId) {
         try {
             Item existingItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 
-            if (newData != null && !newData.isEmpty()) {
-                for (Variant newVariant : newData) {
-                    newVariant.setItem(existingItem);
-
-                    String generatedCode;
-                    boolean isCodeExist;
-                    do {
-                        String randomString = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
-                        generatedCode = "VAR-" + randomString;
-                        
-                        isCodeExist = variantRepository.existsByVariantCode(generatedCode);
-                    } while (isCodeExist);
-
-                    newVariant.setVariantCode(generatedCode);
-
-                    existingItem.getVariants().add(newVariant);
-                }
+            if (newData == null || newData.isEmpty()) {
+                throw new IllegalArgumentException("Data varian baru tidak boleh kosong"); 
             }
 
-            variantRepository.saveAll(newData);
+            List<Variant> variantsToSave = newData.stream().map(dto -> {
+                Variant variant = new Variant();
+                String generatedCode;
+                boolean isCodeExist;
+
+                variant.setVariantName(dto.getVariantName());
+                variant.setPrice(dto.getPrice());
+                variant.setStock(dto.getStock());
+                variant.setItem(existingItem);
+
+                do {
+                    String randomString = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+                    generatedCode = "VAR-" + randomString;
+                    
+                    isCodeExist = variantRepository.existsByVariantCode(generatedCode);
+                } while (isCodeExist);
+
+                variant.setVariantCode(generatedCode);
+                return variant;
+            }).toList();
+
+            variantRepository.saveAll(variantsToSave);
 
             return ResponseEntity.ok(new BaseResponse<>(null, "Success", HttpStatus.OK.value()));
 
+        } catch (IllegalArgumentException e) {
+            System.err.println("Bad Request: " + e.getMessage());
+            throw e;
         } catch (Exception e) {
             System.err.println("Error while adding new variants: " + e.getMessage());
             throw new RuntimeException("Error while adding new variants", e);
