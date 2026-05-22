@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.geli.testassessment.model.dto.BaseResponse;
-import com.geli.testassessment.model.dto.VariantRequestDTO;
-import com.geli.testassessment.model.dto.VariantResponseDTO;
+import com.geli.testassessment.model.dto.requestDTO.VariantRequestDTO;
+import com.geli.testassessment.model.dto.responseDTO.VariantResponseDTO;
 import com.geli.testassessment.model.entity.Item;
 import com.geli.testassessment.model.entity.Variant;
 import com.geli.testassessment.repository.ItemRepository;

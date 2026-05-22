@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.geli.testassessment.model.dto.BaseResponse;
-import com.geli.testassessment.model.dto.ItemRequestDTO;
-import com.geli.testassessment.model.dto.ItemResponseDTO;
-import com.geli.testassessment.model.dto.VariantResponseDTO;
+import com.geli.testassessment.model.dto.requestDTO.ItemRequestDTO;
+import com.geli.testassessment.model.dto.responseDTO.ItemResponseDTO;
+import com.geli.testassessment.model.dto.responseDTO.VariantResponseDTO;
 import com.geli.testassessment.model.entity.Item;
 import com.geli.testassessment.model.entity.Variant;
 import com.geli.testassessment.repository.ItemRepository;
