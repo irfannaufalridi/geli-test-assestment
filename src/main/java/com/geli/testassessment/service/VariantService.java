@@ -45,8 +45,8 @@ public class VariantService {
             System.err.println("Bad Request: " + e.getMessage());
             throw e;
         } catch (Exception e) {
-            System.err.println("Error while adding new variants: " + e.getMessage());
-            throw new RuntimeException("Error while adding new variants", e);
+            System.err.println("Error while getting variants: " + e.getMessage());
+            throw new RuntimeException("Error while getting variants", e);
         }
     }
 
@@ -90,6 +90,64 @@ public class VariantService {
         } catch (Exception e) {
             System.err.println("Error while adding new variants: " + e.getMessage());
             throw new RuntimeException("Error while adding new variants", e);
+        }
+    }
+
+    public ResponseEntity<BaseResponse<Object>> deleteVariant(Long itemId, Long variantId) {
+        try {
+            Item existingItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+            Variant existingVariant = variantRepository.findById(variantId)
+                .orElseThrow(() -> new IllegalArgumentException("Variant not found"));
+
+            if (existingVariant!=null && existingVariant.getItem().getId().equals(existingItem.getId())) {
+                variantRepository.delete(existingVariant);
+            } else {
+                throw new IllegalArgumentException("Variant does not belong to the specified item");
+            }
+
+            return ResponseEntity.ok(new BaseResponse<>(null, "Delete Success", HttpStatus.OK.value()));
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Bad Request: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Error while deleting variant: " + e.getMessage());
+            throw new RuntimeException("Error deleting variant", e);
+        }
+    }
+
+    public ResponseEntity<BaseResponse<Object>> updateVariant(VariantRequestDTO newData, Long itemId, Long variantId) {
+        try {
+            Item existingItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+            Variant existingVariant = variantRepository.findById(variantId)
+                .orElseThrow(() -> new IllegalArgumentException("Variant not found"));
+
+            if (newData == null) {
+                throw new IllegalArgumentException("Data varian baru tidak boleh kosong"); 
+            }
+
+            if (!existingVariant.getItem().getId().equals(existingItem.getId())) {
+                throw new IllegalArgumentException("Varian ini bukan bagian dari item tersebut!");
+            }
+
+            existingVariant.setVariantName(newData.getVariantName());
+            existingVariant.setPrice(newData.getPrice());
+            existingVariant.setStock(newData.getStock());
+
+            variantRepository.save(existingVariant);
+
+            return ResponseEntity.ok(new BaseResponse<>(null, "Update Success", HttpStatus.OK.value()));
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Bad Request: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Error updating variants: " + e.getMessage());
+            throw new RuntimeException("Error while updating variants", e);
         }
     }
 }

@@ -14,11 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geli.testassessment.model.dto.BaseResponse;
-import com.geli.testassessment.model.dto.ItemRequestDTO;
-import com.geli.testassessment.model.dto.ItemResponseDTO;
 import com.geli.testassessment.model.dto.VariantRequestDTO;
 import com.geli.testassessment.model.dto.VariantResponseDTO;
-import com.geli.testassessment.service.ItemService;
 import com.geli.testassessment.service.VariantService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,5 +34,15 @@ public class VariantController {
     @GetMapping("/getVariant")
     public ResponseEntity<BaseResponse<List<VariantResponseDTO>>> getVariant(@RequestParam Long itemId) {
         return variantService.getVariant(itemId);
+    }
+
+    @PutMapping("/updateVariant/{itemId}/{variantId}")
+    public ResponseEntity<BaseResponse<Object>> updateVariant(@RequestBody VariantRequestDTO newData, @PathVariable Long itemId, @PathVariable Long variantId) {
+        return variantService.updateVariant(newData, itemId, variantId);
+    }
+
+    @DeleteMapping("/deleteVariant/{itemId}/{variantId}")
+    public ResponseEntity<BaseResponse<Object>> deleteVariant(@PathVariable Long itemId, @PathVariable Long variantId) {
+        return variantService.deleteVariant(itemId, variantId);
     }
 }
