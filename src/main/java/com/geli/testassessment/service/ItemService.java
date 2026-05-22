@@ -233,4 +233,17 @@ public class ItemService {
             throw new RuntimeException("Error while updating item", e);
         }
     }
+
+    public ResponseEntity<BaseResponse<Object>> deleteItem(Long itemId) {
+        try {
+            
+            itemRepository.deleteById(itemId);
+
+            return ResponseEntity.ok(new BaseResponse<>(null, "Item deleted successfully", HttpStatus.OK.value()));
+
+        } catch (Exception e) {
+            System.err.println("Error while deleting item: " + e.getMessage());
+            throw new RuntimeException("Error while deleting item", e);
+        }
+    }
 }
