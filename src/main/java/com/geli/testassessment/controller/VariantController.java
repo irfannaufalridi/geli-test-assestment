@@ -17,6 +17,7 @@ import com.geli.testassessment.model.dto.BaseResponse;
 import com.geli.testassessment.model.dto.ItemRequestDTO;
 import com.geli.testassessment.model.dto.ItemResponseDTO;
 import com.geli.testassessment.model.dto.VariantRequestDTO;
+import com.geli.testassessment.model.dto.VariantResponseDTO;
 import com.geli.testassessment.service.ItemService;
 import com.geli.testassessment.service.VariantService;
 
@@ -28,8 +29,13 @@ import lombok.RequiredArgsConstructor;
 public class VariantController {
     private final VariantService variantService;
 
-    @PostMapping("/addVariant")
-    public ResponseEntity<BaseResponse<Object>> addVariant(@RequestBody List<VariantRequestDTO> newVariant, @RequestParam Long itemId) {
+    @PostMapping("/addVariant/{itemId}")
+    public ResponseEntity<BaseResponse<Object>> addVariant(@RequestBody List<VariantRequestDTO> newVariant, @PathVariable Long itemId) {
         return variantService.addNewVariant(newVariant, itemId);
+    }
+
+    @GetMapping("/getVariant")
+    public ResponseEntity<BaseResponse<List<VariantResponseDTO>>> getVariant(@RequestParam Long itemId) {
+        return variantService.getVariant(itemId);
     }
 }
