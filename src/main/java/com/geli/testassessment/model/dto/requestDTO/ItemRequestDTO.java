@@ -1,4 +1,4 @@
-package com.geli.testassessment.model.dto;
+package com.geli.testassessment.model.dto.requestDTO;
 
 import java.math.BigDecimal;
 import java.util.List;

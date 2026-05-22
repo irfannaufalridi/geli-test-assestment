@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geli.testassessment.model.dto.BaseResponse;
-import com.geli.testassessment.model.dto.ItemRequestDTO;
-import com.geli.testassessment.model.dto.ItemResponseDTO;
+import com.geli.testassessment.model.dto.requestDTO.ItemRequestDTO;
+import com.geli.testassessment.model.dto.responseDTO.ItemResponseDTO;
 import com.geli.testassessment.service.ItemService;
 
 import lombok.RequiredArgsConstructor;
