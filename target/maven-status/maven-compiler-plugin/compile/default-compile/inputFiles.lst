@@ -3,6 +3,7 @@
 /Users/naufalirfann/Irfann/Great Eastern Life Insurance/TestAssesment/geli-test-assestment/src/main/java/com/geli/testassessment/model/dto/BaseResponse.java
 /Users/naufalirfann/Irfann/Great Eastern Life Insurance/TestAssesment/geli-test-assestment/src/main/java/com/geli/testassessment/model/dto/ItemRequestDTO.java
 /Users/naufalirfann/Irfann/Great Eastern Life Insurance/TestAssesment/geli-test-assestment/src/main/java/com/geli/testassessment/model/dto/ItemResponseDTO.java
+/Users/naufalirfann/Irfann/Great Eastern Life Insurance/TestAssesment/geli-test-assestment/src/main/java/com/geli/testassessment/model/dto/VariantResponseDTO.java
 /Users/naufalirfann/Irfann/Great Eastern Life Insurance/TestAssesment/geli-test-assestment/src/main/java/com/geli/testassessment/model/entity/Item.java
 /Users/naufalirfann/Irfann/Great Eastern Life Insurance/TestAssesment/geli-test-assestment/src/main/java/com/geli/testassessment/model/entity/Variant.java
 /Users/naufalirfann/Irfann/Great Eastern Life Insurance/TestAssesment/geli-test-assestment/src/main/java/com/geli/testassessment/repository/ItemRepository.java
