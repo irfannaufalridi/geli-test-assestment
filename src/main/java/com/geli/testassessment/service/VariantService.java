@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.geli.testassessment.model.dto.BaseResponse;
 import com.geli.testassessment.model.dto.VariantRequestDTO;
+import com.geli.testassessment.model.dto.VariantResponseDTO;
 import com.geli.testassessment.model.entity.Item;
 import com.geli.testassessment.model.entity.Variant;
 import com.geli.testassessment.repository.ItemRepository;
@@ -22,6 +23,32 @@ public class VariantService {
     
     private final VariantRepository variantRepository;
     private final ItemRepository itemRepository;
+
+    public ResponseEntity<BaseResponse<List<VariantResponseDTO>>> getVariant(Long itemId) {
+        try {
+            Item existingItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
+
+            List<VariantResponseDTO> response = existingItem.getVariants().stream().map(variant -> {
+                VariantResponseDTO dto = new VariantResponseDTO();
+                dto.setId(variant.getId());
+                dto.setVariantName(variant.getVariantName());
+                dto.setVariantCode(variant.getVariantCode());
+                dto.setPrice(variant.getPrice());
+                dto.setStock(variant.getStock());
+                return dto;
+            }).toList();
+
+            return ResponseEntity.ok(new BaseResponse<>(response, "Success", HttpStatus.OK.value()));
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Bad Request: " + e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Error while adding new variants: " + e.getMessage());
+            throw new RuntimeException("Error while adding new variants", e);
+        }
+    }
 
     public ResponseEntity<BaseResponse<Object>> addNewVariant(List<VariantRequestDTO> newData, Long itemId) {
         try {
