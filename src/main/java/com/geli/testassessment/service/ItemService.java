@@ -71,6 +71,94 @@ public class ItemService {
         }
     }
 
+    public ResponseEntity<BaseResponse<ItemResponseDTO>> getItemByItemName(String itemName) {
+        try {
+
+            Item items = itemRepository.findByItemNameIgnoreCase(itemName)
+                .orElseThrow(() -> new RuntimeException(itemName + " tidak ditemukan"));
+            ItemResponseDTO response = new ItemResponseDTO();
+            
+            response.setId(items.getId());
+            response.setItemName(items.getItemName());
+            response.setDescription(items.getDescription());
+            response.setPrice(items.getPrice());
+            response.setStock(items.getStock());
+
+            List<VariantResponseDTO> responseVariant = new ArrayList<>();
+            if (items.getVariants() != null && !items.getVariants().isEmpty()) {
+                response.setStock(0);
+                for (Variant tempVariant : items.getVariants()) {
+                    VariantResponseDTO vDto = new VariantResponseDTO();
+                    
+                    vDto.setId(tempVariant.getId());
+                    vDto.setVariantCode(tempVariant.getVariantCode());
+                    vDto.setVariantName(tempVariant.getVariantName());
+                    vDto.setPrice(tempVariant.getPrice());
+                    vDto.setStock(tempVariant.getStock());
+                    
+                    response.setStock(response.getStock() + tempVariant.getStock());
+                    responseVariant.add(vDto);
+                }
+            }
+            response.setVariants(responseVariant);
+            
+            ResponseEntity<BaseResponse<ItemResponseDTO>> responseEntity = ResponseEntity.ok(new BaseResponse<ItemResponseDTO>(response, HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
+
+            return responseEntity;
+
+        } catch (RuntimeException e) {
+            System.err.println("Item not found: " + e.getMessage());
+            throw new RuntimeException("Error while get items", e);
+        } catch (Exception e) {
+            System.err.println("Error while adding product: " + e.getMessage());
+            throw new RuntimeException("Error while get items", e);
+        }
+    }
+
+    public ResponseEntity<BaseResponse<ItemResponseDTO>> getItemByItemId(Long itemId) {
+        try {
+
+            Item items = itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException(itemId + " tidak ditemukan"));
+            ItemResponseDTO response = new ItemResponseDTO();
+            
+            response.setId(items.getId());
+            response.setItemName(items.getItemName());
+            response.setDescription(items.getDescription());
+            response.setPrice(items.getPrice());
+            response.setStock(items.getStock());
+
+            List<VariantResponseDTO> responseVariant = new ArrayList<>();
+            if (items.getVariants() != null && !items.getVariants().isEmpty()) {
+                response.setStock(0);
+                for (Variant tempVariant : items.getVariants()) {
+                    VariantResponseDTO vDto = new VariantResponseDTO();
+                    
+                    vDto.setId(tempVariant.getId());
+                    vDto.setVariantCode(tempVariant.getVariantCode());
+                    vDto.setVariantName(tempVariant.getVariantName());
+                    vDto.setPrice(tempVariant.getPrice());
+                    vDto.setStock(tempVariant.getStock());
+                    
+                    response.setStock(response.getStock() + tempVariant.getStock());
+                    responseVariant.add(vDto);
+                }
+            }
+            response.setVariants(responseVariant);
+            
+            ResponseEntity<BaseResponse<ItemResponseDTO>> responseEntity = ResponseEntity.ok(new BaseResponse<ItemResponseDTO>(response, HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
+
+            return responseEntity;
+
+        } catch (RuntimeException e) {
+            System.err.println("Item not found: " + e.getMessage());
+            throw new RuntimeException("Error while get items", e);
+        } catch (Exception e) {
+            System.err.println("Error while adding product: " + e.getMessage());
+            throw new RuntimeException("Error while get items", e);
+        }
+    }
+
     public ResponseEntity<BaseResponse<Object>> addItem(ItemRequestDTO newData) {
         try {
 
@@ -109,6 +197,40 @@ public class ItemService {
         } catch (Exception e) {
             System.err.println("Error while adding product: " + e.getMessage());
             throw new RuntimeException("Error while adding item", e);
+        }
+    }
+
+    public ResponseEntity<BaseResponse<Object>> updateItem(ItemRequestDTO newData, Long itemId) {
+        try {
+            Item item = itemRepository.findById(itemId)
+                    .orElseThrow(() -> new RuntimeException("Item not found"));
+
+            item.setItemName(newData.getItemName());
+            item.setPrice(newData.getPrice());
+            item.setStock(newData.getStock());
+            item.setDescription(newData.getDescription());
+            
+            if (newData.getVariants() != null && !newData.getVariants().isEmpty()) {
+                item.getVariants().clear();
+
+                newData.getVariants().forEach(tempVariant -> {
+                    if (tempVariant.getVariantCode() == null) {
+                        String randomCode = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+                        tempVariant.setVariantCode("VAR-" + randomCode);
+                        tempVariant.setItem(item);
+                    }
+
+                    item.getVariants().add(tempVariant);
+                });
+            }
+
+            itemRepository.save(item);
+
+            return ResponseEntity.ok(new BaseResponse<>(null, HttpStatus.OK.getReasonPhrase(), HttpStatus.OK.value()));
+
+        } catch (Exception e) {
+            System.err.println("Error while updating item: " + e.getMessage());
+            throw new RuntimeException("Error while updating item", e);
         }
     }
 }
