@@ -3,7 +3,9 @@ package com.geli.testassessment.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,5 +49,10 @@ public class ItemController {
     @PutMapping("/updateItem")
     public ResponseEntity<BaseResponse<Object>> updateItem(@RequestBody ItemRequestDTO updatedItem, @RequestParam Long itemId) {
         return itemService.updateItem(updatedItem, itemId);
+    }
+
+    @DeleteMapping("/deleteItem/{itemId}")
+    public ResponseEntity<BaseResponse<Object>> deleteItem(@PathVariable Long itemId) {
+        return itemService.deleteItem(itemId);
     }
 }
