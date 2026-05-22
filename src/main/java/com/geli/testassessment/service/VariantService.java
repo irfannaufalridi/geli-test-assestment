@@ -1,6 +1,7 @@
 package com.geli.testassessment.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,22 +22,37 @@ public class VariantService {
     private final VariantRepository variantRepository;
     private final ItemRepository itemRepository;
 
-    public ResponseEntity<BaseResponse<Object>> addVariant(List<Variant> newData, Long itemId) {
+    public ResponseEntity<BaseResponse<Object>> addNewVariant(List<Variant> newData, Long itemId) {
         try {
-
             Item existingItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Item not found"));
 
-            existingItem.getVariants().addAll(newData);
-            itemRepository.save(existingItem);
+            if (newData != null && !newData.isEmpty()) {
+                for (Variant newVariant : newData) {
+                    newVariant.setItem(existingItem);
 
-            ResponseEntity<BaseResponse<Object>> responseEntity = ResponseEntity.ok(new BaseResponse<Object>(null, "Success", 200));
+                    String generatedCode;
+                    boolean isCodeExist;
+                    do {
+                        String randomString = UUID.randomUUID().toString().substring(0, 6).toUpperCase();
+                        generatedCode = "VAR-" + randomString;
+                        
+                        isCodeExist = variantRepository.existsByVariantCode(generatedCode);
+                    } while (isCodeExist);
 
-            return responseEntity;
+                    newVariant.setVariantCode(generatedCode);
+
+                    existingItem.getVariants().add(newVariant);
+                }
+            }
+
+            variantRepository.saveAll(newData);
+
+            return ResponseEntity.ok(new BaseResponse<>(null, "Success", HttpStatus.OK.value()));
 
         } catch (Exception e) {
-            System.err.println("Error while adding product: " + e.getMessage());
-            throw new RuntimeException("Error while adding product", e);
+            System.err.println("Error while adding new variants: " + e.getMessage());
+            throw new RuntimeException("Error while adding new variants", e);
         }
     }
 }
