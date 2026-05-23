@@ -121,11 +121,11 @@ All API requests and responses use the `application/json` content type. The resp
 
 Follow these steps to set up and run the application locally on your machine.
 
-### 📋 Prerequisites
+### Prerequisites
 Before running the application, ensure you have the following installed:
 - **Java Development Kit (JDK):** Version 17
 - **Apache Maven:** Version 3.5.14
-- **Database:** PostgreSQL or MySQL running locally
+- **Database:** PostgreSQL
 
 ---
 
